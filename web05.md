@@ -167,7 +167,15 @@ for salt in itertools.product(hex_char, repeat=5):
 
 Получаем флаг!
 
-[main_page]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Main page"
-[main_page]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Main page"
-[main_page]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Main page"
-[main_page]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Main page"
+[main_page]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Главная страница"
+[alert_msg]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Предупреждение"
+[login_page]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Страница входа"
+[register_page]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Страница регистрации"
+[reg_success]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Успешная регистрация"
+[try_login]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Попытка войти"
+[login_success]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Вход прошел успешно"
+[user_page]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Страница пользователя"
+[try_simple_inj]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Попытка вставить простую sql-инъекцию"
+[simple_inj_result]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Результат sql-иъекции"
+[form_source]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Исходный код формы пополнения счета"
+[flag_is]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Флаг"
