@@ -123,8 +123,11 @@ def sql(query):
 Попробуем перейти на `/2112jb1njIUIJ__tr_R/tips.txt`.
 
 > tips:
+>
 > 1、Congratulations for you !You finished 80%,Come on continue!
+>
 > 2、token=md5(md5(username)+salt) salt max lenght is 5(hexs)
+>
 > 3、Add the Money Get the Flag
 
 Во второй подсказке говорится о каком-то токене. А чтобы получить флаг, нужно пополнить счет.
