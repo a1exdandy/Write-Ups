@@ -177,7 +177,7 @@ for salt in itertools.product(hex_char, repeat=5):
 
 Получаем флаг!
 
-[main_page]: /SSCTF 2016 quals/web05/images/main_page.png "Главная страница"
+[main_page]: "/SSCTF 2016 quals/web05/images/main_page.png" "Главная страница"
 [alert_msg]: /SSCTF 2016 quals/web05/images/alert_msg.png "Предупреждение"
 [login_page]: /SSCTF 2016 quals/web05/images/ligon_page.png "Страница входа"
 [reg_success]: /SSCTF 2016 quals/web05/images/reg_succ.png "Успешная регистрация"
