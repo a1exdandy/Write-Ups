@@ -179,7 +179,7 @@ for salt in itertools.product(hex_char, repeat=5):
 
 [main_page]: images/main_page.png "Главная страница"
 [alert_msg]: images/alert_msg.png "Предупреждение"
-[login_page]: images/ligon_page.png "Страница входа"
+[login_page]: images/login_page.png "Страница входа"
 [reg_success]: images/reg_succ.png "Успешная регистрация"
 [try_login]: images/login.png "Попытка войти"
 [login_success]: images/login_succ.png "Вход прошел успешно"
