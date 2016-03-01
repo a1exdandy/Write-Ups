@@ -1,37 +1,36 @@
 SSCTF 2016 quals Write-up
 =====
 AFSRC-Market (Web, 500p)
----
+-----
 
-![alt-text][main_page]
+![Главная страница][main_page]
 
 Просмотрев главную страницу становится понятно, что форма поиска не функционирует.
 При попытке добавить какой-либо товар в корзину появляетя просьба войти на сайт, и
 происходит редирект на страницу входа.
 При нажатии на сами товары проиcходит переход по ссылке `https://security.alipay.com/`.
 
-![alt-text][alert_msg]
+![Please login~~~~~~][alert_msg]
 
-![alt-text][login_page]
+![Страница входа][login_page]
 
 На странице входа требуется ввести логин, пароль и капчу. Попытки использовать различные
 служебные символы не приводят к неожиданному поведению сайта.
-Перейдем к странице регистрации.
+Перейдем к странице регистрации. Попробуем зарегистрировать нового пользователя.
 
-![alt-text][register_page]
+![Успешная регистрация][reg_success]
 
-Попробуем зарегистрировать нового пользователя.
-
-![alt-text][reg_success]
-
-![alt-text][try_login]
+![Успешный вход][login_success]
 
 Видим сообщение об успешной регистрации, после которого нас перенаправляют на страницу входа. Пытаемся зайти и... Успех!
 
-![alt-text][login_success]
+![Главная страница после входа][main_page_after_login]
 
 В шапке сайта появились ссылки на профиль пользователя и кнопка выхода. Форма поиска, как и раньше, не функционирует.
 Заметим, что после авторизации, в cookie было добавлено единственное значение PHPSESSID - идентификатор сессии в PHP.
+
+![Куки][cookies]
+
 Теперь при попытке добавить товар в корзину осуществляется переход по ссылке вида
 `http://edb24e7c.seclover.com/add_cart.php?id=XXX` где вместо `XXX` - какой-нибудь номер.
 После этого окрывается домашняя страница, и больше ничего не происходит.
@@ -39,13 +38,19 @@ AFSRC-Market (Web, 500p)
 при вводе символов, не являющихся цифрами, выдается сообщение об ошибке. Также допустим ввод следующего типа: `id=0x123456`.
 Это говорит о том, что параметр `id`, скорее всего, проверяетя перед вставкой в запрос с помощью PHP функции `is_numeric()`.
 
-![alt-text][user_page]
+![Страница пользователя][user_page]
 
 Теперь рассмотрим страницу пользователя. В шапке сайта появляеся ссылка `AddMoney` на
 `http://edb24e7c.seclover.com/addmoney.php`, при переходе по которой выводится сообщение.
 Также имеются 3 переключаемые вкладки: `Description`, `Additional Information`, `MyInfo`.
 Первые две вкладки не так интересны, т.к. скорее всего являются статическими, а третья содержит форму
-для добавления денег. Попробуем отправить форму и получим сообщение об ошибке. Также внимание привлекает
+для добавления денег. Попробуем отправить форму и получим сообщение об ошибке.
+
+![Форма пополнения счета][my_info]
+
+![Сообщение об ошибке при отправке формы][add_money_error]
+
+Также внимание привлекает
 строка `The Last cost: 0`. Попробуем выяснить, откуда взялось значение `0`.
 После небольшого исследования становится ясно, что при каждом запросе `/add_cart.php?id=XXX`, при указании верного числа в `id`, `The Last cost` принимает случайное ненулевое значение. Если `id=0x123456` или другому случайному hex, то значение обнуляется.
 Итак, значение `The Last cost` каким-то образом зависит от параметра `id`, изменяемом при добавлении товара. Как уже было сказано, скорее всего значение параметра `id` проверяется с помощью функции `is_numeric()`, которая пропускает hex. Попробуем совершить простую "is_numeric bypass" sql-инъекцию через параметр `id`. Для генерации hex-значений воспользуемся `python3`
@@ -54,9 +59,9 @@ AFSRC-Market (Web, 500p)
 '0x3120414e4420313d32203b202d2d20'
 ```
 
-![alt-text][try_simple_inj]
+![Простая sql-инъекция, обходящая is_numeric][try_simple_inj]
 
-![alt-text][simple_inj_result]
+![Результат инъекции][simple_inj_result]
 
 Как видно на скрине, значение стало пустым. Для удобства исследования напишем функцию на Python, которая будет
 отправлять нужный запрос и получать новое значение со страницы пользователя.
@@ -133,7 +138,7 @@ def sql(query):
 Во второй подсказке говорится о каком-то токене. А чтобы получить флаг, нужно пополнить счет.
 Вернемся к форме пополнение денег и посмотрим исходный код формы.
 
-![alt-text][form_source]
+![Исходный код формы][form_source]
 
 Видим, что в форме есть скрытый параметр `salt`. Осталось его подобрать, но для этого необходим `token`.
 Вернемся к базе данных и посмотрим, какие данные хранятся в таблице пользователей.
@@ -166,19 +171,25 @@ for salt in itertools.product(hex_char, repeat=5):
 
 Запустим скрипт и увидим результат: `Salt = 8b76d`. Добавим его в форму пополнения счета.
 
-![alt-text][flag_is]
+![Измененная форма][salted_form]
+
+![Флаг][flag_is]
 
 Получаем флаг!
 
-[main_page]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Главная страница"
-[alert_msg]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Предупреждение"
-[login_page]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Страница входа"
-[register_page]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Страница регистрации"
-[reg_success]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Успешная регистрация"
-[try_login]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Попытка войти"
-[login_success]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Вход прошел успешно"
-[user_page]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Страница пользователя"
-[try_simple_inj]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Попытка вставить простую sql-инъекцию"
-[simple_inj_result]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Результат sql-иъекции"
-[form_source]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Исходный код формы пополнения счета"
-[flag_is]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Флаг"
+[main_page]: /images/main_page.png "Главная страница"
+[alert_msg]: /images/alert_msg.png "Предупреждение"
+[login_page]: /images/ligon_page.png "Страница входа"
+[reg_success]: /images/reg_succ.png "Успешная регистрация"
+[try_login]: /images/login.png "Попытка войти"
+[login_success]: /images/login_succ.png "Вход прошел успешно"
+[main_page_after_login]: /images/main_page_after_login.png "Главная страница после входа"
+[cookies]: /images/cookies.png "Cookies"
+[my_info]: /images/my_info.png "Форма пополнения счета"
+[user_page]: /images/user_page.png "Страница пользователя"
+[add_money_error]: /images/add_money_error.png "Ошибка при пополнении счета"
+[try_simple_inj]: /images/inj.png "Попытка вставить простую sql-инъекцию"
+[simple_inj_result]: /images/inj_res.png "Результат sql-иъекции"
+[form_source]: /images/form_source.png "Исходный код формы пополнения счета"
+[salted_form]: /images/salted_form.png "Измененная форма"
+[flag_is]: /images/flag_is.png "Флаг"
