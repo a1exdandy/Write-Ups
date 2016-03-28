@@ -284,7 +284,7 @@ a1exdandy@a1exdandy-pc:~/CTF/VolgaCTF/transformer$ cat trace.raw | grep "=> 0x00
 
 Эквивалентный код для этих двух функций на `python`
 
-```python3
+```python
 def replace(block):
     return bytes([replace_table[x] for x in block])
 ```
@@ -307,7 +307,7 @@ def replace(block):
 вызывается инструкция `pshufb xmm7,xmm0`, которая применяет ко входному блоку данных
 некоторую перестановку, зависящую от `xmm0`. Эквивалентный код на `python`:
 
-```python3
+```python
 def permutate(block):
     return bytes([block[permutation[15 - i]] for i in range(16)])
 ```
